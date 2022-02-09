@@ -1,6 +1,9 @@
 /* Programming Language.c - Simple implementation of the
- * A programming language is any set of rules that converts strings, or graphical program elements in the case of visual programming languages, to various kinds of machine code output.
- * (abbreviated Programming Language) programming language (January 25th, 2022 edition).
+ * A programming language is any set of rules that converts strings,
+ * or graphical program elements in the case of visual programming languages,
+ * to various kinds of machine code output.
+ * (abbreviated Programming Language)
+ * programming language (January 25th, 2022 edition).
  * By unsubtract, MIT License
  */
 #include <errno.h>
@@ -8,7 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char* const programming_language = "A programming language is any set of rules that converts strings, or graphical program elements in the case of visual programming languages, to various kinds of machine code output.";
+#define BUFFER_SIZE strlen(programming_language) + 1 /* Adds 1 for null char */
+static const char* const programming_language = \
+"A programming language is any set of rules that converts strings, or \
+graphical program elements in the case of visual programming \
+languages, to various kinds of machine code output.\n";
+
 int main(int argc, char *argv[]) {
     FILE *f = NULL;
     unsigned long fsize = 0;
@@ -25,20 +33,27 @@ int main(int argc, char *argv[]) {
         exit(errno);
     }
 
-    fseek(f, 0, SEEK_END);
-    fsize = ftell(f);     /* Get filesize */
-    fseek(f, 0, SEEK_SET);
+    /* We first test if filesizes are equal before comparing strings */
 
-    command = malloc(fsize + 1);
+    fseek(f, 0, SEEK_END);/**/
+    fsize = ftell(f);     /* Get filesize */
+    fseek(f, 0, SEEK_SET);/**/
+
+    if (fsize != BUFFER_SIZE - 1) {
+        fclose(f);
+        exit(EXIT_SUCCESS);
+    }
+
+    command = malloc(BUFFER_SIZE);
     if (command == NULL) {
-        fprintf(stderr, "Failed to allocate %lu bytes of memory: %s\n", fsize + 1, strerror(errno));
+        fprintf(stderr, "Failed to allocate memory: %s\n", strerror(errno));
         fclose(f);
         exit(errno);
     }
-    fgets(command, fsize, f);
+    fgets(command, BUFFER_SIZE, f);
 
     if (!strcmp(command, programming_language))
-        puts(programming_language);
+        fputs(programming_language, stdout);
     fclose(f);
     return EXIT_SUCCESS;
 }
