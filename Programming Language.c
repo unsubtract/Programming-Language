@@ -13,9 +13,9 @@
 
 #define BUFFER_SIZE strlen(programming_language) + 1 /* Adds 1 for null char */
 static const char* const programming_language = \
-"A programming language is any set of rules that converts strings, or \
-graphical program elements in the case of visual programming \
-languages, to various kinds of machine code output.\n";
+"A programming language is any set of rules that converts strings, \
+or graphical program elements in the case of visual programming \
+languages, to various kinds of machine code output.";
 
 int main(int argc, char *argv[]) {
     FILE *f = NULL;
@@ -29,31 +29,27 @@ int main(int argc, char *argv[]) {
 
     f = fopen(argv[1], "r");
     if (f == NULL) {
-        fprintf(stderr, "Failed to open %s: %s\n", argv[1], strerror(errno));
+        perror(argv[0]);
         exit(errno);
     }
 
-    /* We first test if filesizes are equal before comparing strings */
-
+    /* first test if filesizes are equal before comparing strings */
     fseek(f, 0, SEEK_END);/**/
     fsize = ftell(f);     /* Get filesize */
     fseek(f, 0, SEEK_SET);/**/
 
-    if (fsize != BUFFER_SIZE - 1) {
+    if (fsize != BUFFER_SIZE) {
         fclose(f);
         exit(EXIT_SUCCESS);
     }
 
+    /* check if strings are equal */
     command = malloc(BUFFER_SIZE);
-    if (command == NULL) {
-        fprintf(stderr, "Failed to allocate memory: %s\n", strerror(errno));
-        fclose(f);
-        exit(errno);
-    }
     fgets(command, BUFFER_SIZE, f);
+    command[strcspn(command, "\n")] = 0; /* strip newline */
 
     if (!strcmp(command, programming_language))
-        fputs(programming_language, stdout);
+        puts(programming_language);
     fclose(f);
     return EXIT_SUCCESS;
 }
