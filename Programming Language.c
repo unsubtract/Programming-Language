@@ -1,9 +1,7 @@
 /* Programming Language.c - Simple implementation of the
- * A programming language is any set of rules that converts strings,
- * or graphical program elements in the case of visual programming languages,
- * to various kinds of machine code output.
- * (abbreviated Programming Language)
- * programming language (January 25th, 2022 edition).
+ * A programming language is a system of notation for writing
+ * computer programs. (abbreviated Programming Language) programming language
+ * (October 5, 2022 edition).
  * By unsubtract, MIT License
  */
 #include <errno.h>
@@ -13,9 +11,8 @@
 
 #define BUFFER_SIZE strlen(programming_language) + 1 /* Adds 1 for null char */
 static const char* const programming_language = \
-"A programming language is any set of rules that converts strings, \
-or graphical program elements in the case of visual programming \
-languages, to various kinds of machine code output.";
+"A programming language is a system of notation for writing \
+computer programs.";
 
 int main(int argc, char *argv[]) {
     FILE *f = NULL;
