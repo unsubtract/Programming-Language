@@ -17,29 +17,30 @@ int main(int argc, char *argv[]) {
     unsigned int i;
     char input[sizeof(program) + 1];
 
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <file>\n", argv[0]);
-        exit(EXIT_FAILURE);
+    if (argc >= 2) {
+        if ((f = fopen(argv[1], "rb")) == NULL) {
+            perror(argv[0]);
+            exit(EXIT_FAILURE);
+        }
     }
+    else f = stdin;
+    /* stdin parsing is able to avoid newline related problems on Windows
+     * because there are no newlines in this case */
 
-    if ((f = fopen(argv[1], "rb")) == NULL) {
-        perror(argv[0]);
-        exit(EXIT_FAILURE);
-    }
 
-    /* read file and check filesize
+    /* read file and check filesize:
      * read 1 extra byte to detect if file is too big */
     if (fread(input, 1, sizeof(program) + 1, f) != sizeof(program)) {
-        fclose(f);
+        if (f != stdin) fclose(f);
         exit(EXIT_SUCCESS);
     }
 
     /* i stops short of sizeof(program) if a difference is found */
     for (i = 0; i < sizeof(program) && input[i] == program[i]; ++i);
 
-    /* output is deliberately not EOL terminated and treated as binary */
+    /* output is deliberately not EOL terminated and is treated as binary */
     if (i == sizeof(program)) fwrite(program, 1, sizeof(program), stdout);
 
-    fclose(f);
+    if (f != stdin) fclose(f);
     return EXIT_SUCCESS;
 }
